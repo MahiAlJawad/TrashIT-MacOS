@@ -1,0 +1,264 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 60;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000000000000000000001 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* AppModel.swift */; };
+		A10000000000000000000002 /* TrashITApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* TrashITApp.swift */; };
+		A10000000000000000000003 /* CleanupEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* CleanupEngine.swift */; };
+		A10000000000000000000004 /* SafetyPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* SafetyPolicy.swift */; };
+		A10000000000000000000005 /* CleanupModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000005 /* CleanupModels.swift */; };
+		A10000000000000000000006 /* ScannerSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000006 /* ScannerSettings.swift */; };
+		A10000000000000000000007 /* ReceiptStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* ReceiptStore.swift */; };
+		A10000000000000000000008 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* SettingsStore.swift */; };
+		A10000000000000000000009 /* CleanupScanning.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000009 /* CleanupScanning.swift */; };
+		A1000000000000000000000A /* DeveloperCacheScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* DeveloperCacheScanner.swift */; };
+		A1000000000000000000000B /* GeneralStorageScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000B /* GeneralStorageScanner.swift */; };
+		A1000000000000000000000C /* OldFileScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000C /* OldFileScanner.swift */; };
+		A1000000000000000000000D /* SimulatorScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000D /* SimulatorScanner.swift */; };
+		A1000000000000000000000E /* XcodeScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000E /* XcodeScanner.swift */; };
+		A1000000000000000000000F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000F /* ContentView.swift */; };
+		A10000000000000000000010 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000010 /* HistoryView.swift */; };
+		A10000000000000000000011 /* OverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000011 /* OverviewView.swift */; };
+		A10000000000000000000012 /* ReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* ReviewView.swift */; };
+		A10000000000000000000013 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000013 /* SettingsView.swift */; };
+		A10000000000000000000014 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000014 /* Theme.swift */; };
+		A10000000000000000000015 /* FileInspection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000015 /* FileInspection.swift */; };
+		A10000000000000000000016 /* Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000016 /* Formatting.swift */; };
+		A10000000000000000000017 /* ProcessRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000017 /* ProcessRunner.swift */; };
+		A10000000000000000000018 /* ProjectArtifactScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001B /* ProjectArtifactScanner.swift */; };
+		A10000000000000000000019 /* DockerScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001C /* DockerScanner.swift */; };
+		A1000000000000000000001A /* CleanupResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001D /* CleanupResultView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A20000000000000000000001 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/App/AppModel.swift; sourceTree = "<group>"; };
+		A20000000000000000000002 /* TrashITApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/App/TrashITApp.swift; sourceTree = "<group>"; };
+		A20000000000000000000003 /* CleanupEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Cleanup/CleanupEngine.swift; sourceTree = "<group>"; };
+		A20000000000000000000004 /* SafetyPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Cleanup/SafetyPolicy.swift; sourceTree = "<group>"; };
+		A20000000000000000000005 /* CleanupModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Models/CleanupModels.swift; sourceTree = "<group>"; };
+		A20000000000000000000006 /* ScannerSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Models/ScannerSettings.swift; sourceTree = "<group>"; };
+		A20000000000000000000007 /* ReceiptStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Persistence/ReceiptStore.swift; sourceTree = "<group>"; };
+		A20000000000000000000008 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Persistence/SettingsStore.swift; sourceTree = "<group>"; };
+		A20000000000000000000009 /* CleanupScanning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Scanning/CleanupScanning.swift; sourceTree = "<group>"; };
+		A2000000000000000000000A /* DeveloperCacheScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Scanning/DeveloperCacheScanner.swift; sourceTree = "<group>"; };
+		A2000000000000000000000B /* GeneralStorageScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Scanning/GeneralStorageScanner.swift; sourceTree = "<group>"; };
+		A2000000000000000000000C /* OldFileScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Scanning/OldFileScanner.swift; sourceTree = "<group>"; };
+		A2000000000000000000000D /* SimulatorScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Scanning/SimulatorScanner.swift; sourceTree = "<group>"; };
+		A2000000000000000000000E /* XcodeScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Scanning/XcodeScanner.swift; sourceTree = "<group>"; };
+		A2000000000000000000000F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/UI/ContentView.swift; sourceTree = "<group>"; };
+		A20000000000000000000010 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/UI/HistoryView.swift; sourceTree = "<group>"; };
+		A20000000000000000000011 /* OverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/UI/OverviewView.swift; sourceTree = "<group>"; };
+		A20000000000000000000012 /* ReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/UI/ReviewView.swift; sourceTree = "<group>"; };
+		A20000000000000000000013 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/UI/SettingsView.swift; sourceTree = "<group>"; };
+		A20000000000000000000014 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/UI/Theme.swift; sourceTree = "<group>"; };
+		A20000000000000000000015 /* FileInspection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Utilities/FileInspection.swift; sourceTree = "<group>"; };
+		A20000000000000000000016 /* Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Utilities/Formatting.swift; sourceTree = "<group>"; };
+		A20000000000000000000017 /* ProcessRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Utilities/ProcessRunner.swift; sourceTree = "<group>"; };
+		A20000000000000000000018 /* TrashIT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrashIT.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000019 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
+		A2000000000000000000001A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		A2000000000000000000001B /* ProjectArtifactScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Scanning/ProjectArtifactScanner.swift; sourceTree = "<group>"; };
+		A2000000000000000000001C /* DockerScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Scanning/DockerScanner.swift; sourceTree = "<group>"; };
+		A2000000000000000000001D /* CleanupResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/UI/CleanupResultView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A30000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A40000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A40000000000000000000002 /* Sources */,
+				A20000000000000000000019 /* Package.swift */,
+				A2000000000000000000001A /* README.md */,
+				A40000000000000000000003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A40000000000000000000002 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000001 /* AppModel.swift */,
+				A20000000000000000000002 /* TrashITApp.swift */,
+				A20000000000000000000003 /* CleanupEngine.swift */,
+				A20000000000000000000004 /* SafetyPolicy.swift */,
+				A20000000000000000000005 /* CleanupModels.swift */,
+				A20000000000000000000006 /* ScannerSettings.swift */,
+				A20000000000000000000007 /* ReceiptStore.swift */,
+				A20000000000000000000008 /* SettingsStore.swift */,
+				A20000000000000000000009 /* CleanupScanning.swift */,
+				A2000000000000000000000A /* DeveloperCacheScanner.swift */,
+				A2000000000000000000000B /* GeneralStorageScanner.swift */,
+				A2000000000000000000000C /* OldFileScanner.swift */,
+				A2000000000000000000000D /* SimulatorScanner.swift */,
+				A2000000000000000000000E /* XcodeScanner.swift */,
+				A2000000000000000000001B /* ProjectArtifactScanner.swift */,
+				A2000000000000000000001C /* DockerScanner.swift */,
+				A2000000000000000000000F /* ContentView.swift */,
+				A2000000000000000000001D /* CleanupResultView.swift */,
+				A20000000000000000000010 /* HistoryView.swift */,
+				A20000000000000000000011 /* OverviewView.swift */,
+				A20000000000000000000012 /* ReviewView.swift */,
+				A20000000000000000000013 /* SettingsView.swift */,
+				A20000000000000000000014 /* Theme.swift */,
+				A20000000000000000000015 /* FileInspection.swift */,
+				A20000000000000000000016 /* Formatting.swift */,
+				A20000000000000000000017 /* ProcessRunner.swift */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		A40000000000000000000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (A20000000000000000000018 /* TrashIT.app */);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A50000000000000000000001 /* TrashIT */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A90000000000000000000002 /* Build configuration list for PBXNativeTarget "TrashIT" */;
+			buildPhases = (
+				A70000000000000000000001 /* Sources */,
+				A30000000000000000000001 /* Frameworks */,
+				A70000000000000000000002 /* Resources */,
+			);
+			buildRules = ();
+			dependencies = ();
+			name = TrashIT;
+			productName = TrashIT;
+			productReference = A20000000000000000000018 /* TrashIT.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A60000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2660;
+				LastUpgradeCheck = 2660;
+				TargetAttributes = { A50000000000000000000001 = { CreatedOnToolsVersion = 26.6; }; };
+			};
+			buildConfigurationList = A90000000000000000000001 /* Build configuration list for PBXProject "TrashIT" */;
+			compatibilityVersion = "Xcode 15.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (en, Base);
+			mainGroup = A40000000000000000000001;
+			productRefGroup = A40000000000000000000003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (A50000000000000000000001 /* TrashIT */);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A70000000000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A70000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000001 /* AppModel.swift in Sources */,
+				A10000000000000000000002 /* TrashITApp.swift in Sources */,
+				A10000000000000000000003 /* CleanupEngine.swift in Sources */,
+				A10000000000000000000004 /* SafetyPolicy.swift in Sources */,
+				A10000000000000000000005 /* CleanupModels.swift in Sources */,
+				A10000000000000000000006 /* ScannerSettings.swift in Sources */,
+				A10000000000000000000007 /* ReceiptStore.swift in Sources */,
+				A10000000000000000000008 /* SettingsStore.swift in Sources */,
+				A10000000000000000000009 /* CleanupScanning.swift in Sources */,
+				A1000000000000000000000A /* DeveloperCacheScanner.swift in Sources */,
+				A1000000000000000000000B /* GeneralStorageScanner.swift in Sources */,
+				A1000000000000000000000C /* OldFileScanner.swift in Sources */,
+				A1000000000000000000000D /* SimulatorScanner.swift in Sources */,
+				A1000000000000000000000E /* XcodeScanner.swift in Sources */,
+				A1000000000000000000000F /* ContentView.swift in Sources */,
+				A10000000000000000000010 /* HistoryView.swift in Sources */,
+				A10000000000000000000011 /* OverviewView.swift in Sources */,
+				A10000000000000000000012 /* ReviewView.swift in Sources */,
+				A10000000000000000000013 /* SettingsView.swift in Sources */,
+				A10000000000000000000014 /* Theme.swift in Sources */,
+				A10000000000000000000015 /* FileInspection.swift in Sources */,
+				A10000000000000000000016 /* Formatting.swift in Sources */,
+				A10000000000000000000017 /* ProcessRunner.swift in Sources */,
+				A10000000000000000000018 /* ProjectArtifactScanner.swift in Sources */,
+				A10000000000000000000019 /* DockerScanner.swift in Sources */,
+				A1000000000000000000001A /* CleanupResultView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A80000000000000000000001 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {CLANG_ENABLE_MODULES = YES; MACOSX_DEPLOYMENT_TARGET = 14.0; SDKROOT = macosx; SWIFT_VERSION = 5.0; }; name = Debug; };
+		A80000000000000000000002 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {CLANG_ENABLE_MODULES = YES; MACOSX_DEPLOYMENT_TARGET = 14.0; SDKROOT = macosx; SWIFT_COMPILATION_MODE = wholemodule; SWIFT_OPTIMIZATION_LEVEL = "-O"; SWIFT_VERSION = 5.0; }; name = Release; };
+		A80000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = TrashIT;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHighResolutionCapable = YES;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.trashit.mac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Debug;
+		};
+		A80000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = TrashIT;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHighResolutionCapable = YES;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.trashit.mac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A90000000000000000000001 /* Build configuration list for PBXProject "TrashIT" */ = {isa = XCConfigurationList; buildConfigurations = (A80000000000000000000001 /* Debug */, A80000000000000000000002 /* Release */); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A90000000000000000000002 /* Build configuration list for PBXNativeTarget "TrashIT" */ = {isa = XCConfigurationList; buildConfigurations = (A80000000000000000000003 /* Debug */, A80000000000000000000004 /* Release */); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+/* End XCConfigurationList section */
+	};
+	rootObject = A60000000000000000000001 /* Project object */;
+}
