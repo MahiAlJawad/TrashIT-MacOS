@@ -18,14 +18,14 @@ let package = Package(
             name: "TrashITCore",
             path: "Sources/TrashIT",
             exclude: ["App/TrashITApp.swift"],
-            sources: ["App/AppModel.swift", "Cleanup", "Models", "Persistence", "Scanning", "UI", "Utilities"],
+            sources: ["App/AppModel.swift", "CLI", "Cleanup", "Models", "Persistence", "Scanning", "UI", "Utilities"],
             swiftSettings: [.define("TRASHIT_CORE")]
         ),
         .executableTarget(
             name: "TrashITDirect",
             dependencies: ["TrashITCore"],
             path: "Sources/TrashIT",
-            exclude: ["App/AppModel.swift", "Cleanup", "Models", "Persistence", "Scanning", "UI", "Utilities"],
+            exclude: ["App/AppModel.swift", "CLI", "Cleanup", "Models", "Persistence", "Scanning", "UI", "Utilities"],
             sources: ["App/TrashITApp.swift"],
             swiftSettings: [.define("TRASHIT_DIRECT")]
         ),

@@ -329,6 +329,37 @@ final class TrashITTests: XCTestCase {
         XCTAssertNil(ToolLocator.executable(named: "npm; rm"))
     }
 
+    func testCLIUsesExplicitSmartSelectionAndSharedReceipts() async {
+        let safe = makeItem(name: "Safe", bytes: 25, recommendations: [.lowRisk])
+        let manual = makeItem(name: "Manual", bytes: 100)
+        let scanner = StorageScanner(scanners: [FixedItemScanner(items: [safe, manual])])
+        let receiptDirectory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("TrashIT-CLI-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: receiptDirectory) }
+        let service = TrashITCLIService(
+            scanner: scanner,
+            receiptStore: ReceiptStore(directory: receiptDirectory)
+        )
+
+        let unselected = await service.scan()
+        XCTAssertEqual(unselected.items.count, 2)
+        XCTAssertEqual(unselected.selectedCount, 0)
+
+        let preview = await service.scan(selection: .safe)
+        XCTAssertEqual(preview.selectedCount, 1)
+        XCTAssertEqual(preview.selectedBytes, 25)
+        XCTAssertEqual(preview.items.first(where: \.selected)?.name, "Safe")
+
+        let cleanup = await service.clean(selection: .safe)
+        XCTAssertEqual(cleanup.entries.count, 1, "Manual review items must not reach the cleanup engine")
+        XCTAssertEqual(cleanup.entries.first?.name, "Safe")
+        XCTAssertEqual(cleanup.failureCount, 1, "The URL-less test item should fail closed")
+
+        let history = await service.history()
+        XCTAssertEqual(history.count, 1)
+        XCTAssertEqual(history.first?.receiptID, cleanup.receiptID)
+    }
+
     func testEqualRuntimeVersionsKeepNewestBuild() throws {
         let olderBuild = runtimeImage(uuid: "66666666-6666-6666-6666-666666666666", platform: "com.apple.platform.iphonesimulator", version: "18.6", build: "22G80", bytes: 1)
         let newerBuild = runtimeImage(uuid: "77777777-7777-7777-7777-777777777777", platform: "com.apple.platform.iphonesimulator", version: "18.6", build: "22G90", bytes: 1)
@@ -399,6 +430,15 @@ private struct StubScanner: CleanupScanning {
             consequence: "Test",
             source: id
         )])
+    }
+}
+
+private struct FixedItemScanner: CleanupScanning {
+    let id = "fixed-items"
+    let items: [CleanupItem]
+
+    func scan(settings: ScannerSettings) async -> ScanResult {
+        ScanResult(items: items)
     }
 }
 
