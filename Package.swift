@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 5.10
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import PackageDescription
@@ -19,7 +19,7 @@ let package = Package(
             path: "Sources/TrashIT",
             exclude: ["App/TrashITApp.swift"],
             sources: ["App/AppModel.swift", "Cleanup", "Models", "Persistence", "Scanning", "UI", "Utilities"],
-            swiftSettings: [.define("TRASHIT_CORE"), .swiftLanguageMode(.v5)]
+            swiftSettings: [.define("TRASHIT_CORE")]
         ),
         .executableTarget(
             name: "TrashITDirect",
@@ -27,18 +27,17 @@ let package = Package(
             path: "Sources/TrashIT",
             exclude: ["App/AppModel.swift", "Cleanup", "Models", "Persistence", "Scanning", "UI", "Utilities"],
             sources: ["App/TrashITApp.swift"],
-            swiftSettings: [.define("TRASHIT_DIRECT"), .swiftLanguageMode(.v5)]
+            swiftSettings: [.define("TRASHIT_DIRECT")]
         ),
         .executableTarget(
             name: "trashit",
             dependencies: ["TrashITCore"],
-            path: "Sources/TrashITCLI",
-            swiftSettings: [.swiftLanguageMode(.v5)]
+            path: "Sources/TrashITCLI"
         ),
         .testTarget(
             name: "TrashITTests",
-            dependencies: ["TrashITCore"],
-            swiftSettings: [.swiftLanguageMode(.v5)]
+            dependencies: ["TrashITCore"]
         )
-    ]
+    ],
+    swiftLanguageVersions: [.v5]
 )
