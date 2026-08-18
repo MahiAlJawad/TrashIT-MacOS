@@ -26,7 +26,7 @@ enum CleanupCategory: String, CaseIterable, Codable, Identifiable, Sendable {
         case .logs: "Logs & reports"
         case .downloads: "Downloads"
         case .oldFiles: "Old large files"
-        case .duplicates: "Likely duplicates"
+        case .duplicates: "Verified duplicates"
         case .archives: "Archives & installers"
         case .backups: "Device backups"
         case .cloudCopies: "Cloud local copies"
@@ -66,7 +66,7 @@ enum SafetyLevel: Int, CaseIterable, Codable, Comparable, Sendable {
 
     var title: String {
         switch self {
-        case .regeneratable: "Regeneratable"
+        case .regeneratable: "Regenerable"
         case .redownloadable: "Re-downloadable"
         case .reviewRequired: "Review required"
         case .irreplaceable: "Potentially irreplaceable"
@@ -83,6 +83,76 @@ enum SafetyLevel: Int, CaseIterable, Codable, Comparable, Sendable {
     }
 }
 
+enum CleanupRecommendation: String, Codable, Hashable, Sendable {
+    case lowRisk
+    case outdatedSimulator
+    case verifiedDuplicate
+}
+
+enum SmartSelectionRule: String, CaseIterable, Identifiable, Sendable {
+    case safeCleanup
+    case outdatedSimulators
+    case duplicateCopies
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .safeCleanup: "Safe cleanup"
+        case .outdatedSimulators: "Older simulator runtimes"
+        case .duplicateCopies: "Duplicate copies"
+        }
+    }
+
+    var explanation: String {
+        switch self {
+        case .safeCleanup:
+            "Selected items TrashIT can regenerate or download again."
+        case .outdatedSimulators:
+            "Selected older runtime releases while keeping the newest installed release in every major version."
+        case .duplicateCopies:
+            "Selected filename copies whose contents exactly match the original file being kept."
+        }
+    }
+
+    var symbolName: String {
+        switch self {
+        case .safeCleanup: "checkmark.shield"
+        case .outdatedSimulators: "iphone.gen3.radiowaves.left.and.right"
+        case .duplicateCopies: "square.on.square"
+        }
+    }
+
+    var recommendation: CleanupRecommendation {
+        switch self {
+        case .safeCleanup: .lowRisk
+        case .outdatedSimulators: .outdatedSimulator
+        case .duplicateCopies: .verifiedDuplicate
+        }
+    }
+}
+
+struct DuplicateEvidence: Hashable, Codable, Sendable {
+    let groupID: UUID
+    let keeperURL: URL
+}
+
+struct CleanupNavigationRequest: Identifiable, Equatable, Sendable {
+    let id: UUID
+    let category: CleanupCategory?
+    let smartSelection: SmartSelectionRule?
+
+    init(
+        id: UUID = UUID(),
+        category: CleanupCategory? = nil,
+        smartSelection: SmartSelectionRule? = nil
+    ) {
+        self.id = id
+        self.category = category
+        self.smartSelection = smartSelection
+    }
+}
+
 enum CleanupAction: Hashable, Codable, Sendable {
     case deleteRegeneratable
     case deletePermanently
@@ -91,6 +161,7 @@ enum CleanupAction: Hashable, Codable, Sendable {
     case deleteSimulatorDevice(udid: String)
     case deleteSimulatorRuntime(identifier: String)
     case pruneDocker
+    case cleanToolCache(ToolCleanupKind)
 
     var title: String {
         switch self {
@@ -100,6 +171,7 @@ enum CleanupAction: Hashable, Codable, Sendable {
         case .deleteSimulatorDevice: "Delete simulator"
         case .deleteSimulatorRuntime: "Uninstall runtime"
         case .pruneDocker: "Prune with Docker"
+        case .cleanToolCache: "Clean with owning tool"
         }
     }
 
@@ -107,6 +179,37 @@ enum CleanupAction: Hashable, Codable, Sendable {
         switch self {
         case .deleteRegeneratable, .moveToTrash: true
         default: false
+        }
+    }
+}
+
+enum ToolCleanupKind: String, Hashable, Codable, Sendable {
+    case npm
+    case pnpm
+    case pip
+    case uv
+    case goBuild
+    case goModules
+    case bun
+    case corepack
+
+    var executableName: String {
+        switch self {
+        case .goBuild, .goModules: "go"
+        default: rawValue
+        }
+    }
+
+    var arguments: [String] {
+        switch self {
+        case .npm: ["cache", "clean", "--force"]
+        case .pnpm: ["store", "prune"]
+        case .pip: ["cache", "purge"]
+        case .uv: ["cache", "prune"]
+        case .goBuild: ["clean", "-cache"]
+        case .goModules: ["clean", "-modcache"]
+        case .bun: ["pm", "cache", "rm"]
+        case .corepack: ["cache", "clean"]
         }
     }
 }
@@ -123,7 +226,8 @@ struct CleanupItem: Identifiable, Hashable, Codable, Sendable {
     let reason: String
     let consequence: String
     let source: String
-    let defaultSelected: Bool
+    let recommendations: Set<CleanupRecommendation>
+    let duplicateEvidence: DuplicateEvidence?
     let metadata: [String: String]
 
     init(
@@ -138,7 +242,8 @@ struct CleanupItem: Identifiable, Hashable, Codable, Sendable {
         reason: String,
         consequence: String,
         source: String,
-        defaultSelected: Bool = false,
+        recommendations: Set<CleanupRecommendation> = [],
+        duplicateEvidence: DuplicateEvidence? = nil,
         metadata: [String: String] = [:]
     ) {
         self.id = id
@@ -152,7 +257,8 @@ struct CleanupItem: Identifiable, Hashable, Codable, Sendable {
         self.reason = reason
         self.consequence = consequence
         self.source = source
-        self.defaultSelected = defaultSelected
+        self.recommendations = recommendations
+        self.duplicateEvidence = duplicateEvidence
         self.metadata = metadata
     }
 }
@@ -209,3 +315,4 @@ struct CleanupReceipt: Identifiable, Codable, Sendable {
         entries.filter { $0.succeeded && $0.action.usesBin }.reduce(0) { $0 + $1.bytes }
     }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later

@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: License, provenance, CLA, and dependency gates
+        run: bash Scripts/check-licenses.sh
+      - name: Swift tests
+        run: swift test
+      - name: Build free CLI
+        run: swift build --product trashit
+      - name: Build direct application
+        run: >-
+          xcodebuild -project TrashIT.xcodeproj -scheme TrashITDirect -configuration Debug
+          -destination generic/platform=macOS -derivedDataPath /tmp/TrashITDirectDerivedData
+          CODE_SIGNING_ALLOWED=NO build
+      - name: Build sandboxed App Store application
+        run: >-
+          xcodebuild -project TrashIT.xcodeproj -scheme TrashITAppStore -configuration Debug
+          -destination generic/platform=macOS -derivedDataPath /tmp/TrashITAppStoreDerivedData
+          CODE_SIGNING_ALLOWED=NO build
+      - name: Whitespace check
+        run: git diff --check

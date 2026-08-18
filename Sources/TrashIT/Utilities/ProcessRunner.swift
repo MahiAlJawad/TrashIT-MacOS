@@ -96,8 +96,29 @@ enum ToolLocator {
         ])
     }
 
+    static func executable(named name: String) -> URL? {
+        guard name.range(of: #"^[A-Za-z0-9._+-]+$"#, options: .regularExpression) != nil else {
+            return nil
+        }
+        return firstExecutable(at: [
+            "/opt/homebrew/bin/\(name)",
+            "/usr/local/bin/\(name)",
+            "/usr/bin/\(name)"
+        ])
+    }
+
+    static func isProcessRunning(named name: String) -> Bool {
+        guard name.range(of: #"^[A-Za-z0-9._+-]+$"#, options: .regularExpression) != nil,
+              let pgrep = executable(named: "pgrep"),
+              let output = try? ProcessRunner.run(pgrep, arguments: ["-x", name], timeout: 2) else {
+            return true
+        }
+        return output.status == 0
+    }
+
     private static func firstExecutable(at paths: [String]) -> URL? {
         paths.first(where: { FileManager.default.isExecutableFile(atPath: $0) })
             .map { URL(fileURLWithPath: $0) }
     }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later

@@ -26,17 +26,24 @@ actor StorageScanner {
     private let scanners: [any CleanupScanning]
     private let scanTimeoutNanoseconds: UInt64
 
-    init(scanners: [any CleanupScanning] = [
-        XcodeScanner(),
-        SimulatorScanner(),
-        DeveloperCacheScanner(),
-        ProjectArtifactScanner(),
-        DockerScanner(),
-        OldFileScanner(),
-        GeneralStorageScanner()
-    ], scanTimeoutNanoseconds: UInt64 = 30_000_000_000) {
+    init(
+        scanners: [any CleanupScanning] = StorageScanner.defaultScanners,
+        scanTimeoutNanoseconds: UInt64 = 30_000_000_000
+    ) {
         self.scanners = scanners
         self.scanTimeoutNanoseconds = scanTimeoutNanoseconds
+    }
+
+    private static var defaultScanners: [any CleanupScanning] {
+        #if TRASHIT_APP_STORE
+        // The sandboxed build only scans folders the user has explicitly selected.
+        [ProjectArtifactScanner(), OldFileScanner()]
+        #else
+        [
+            XcodeScanner(), SimulatorScanner(), DeveloperCacheScanner(), ProjectArtifactScanner(),
+            DockerScanner(), OldFileScanner(), BrowserCacheScanner(), GeneralStorageScanner()
+        ]
+        #endif
     }
 
     func progressStream(settings: ScannerSettings) -> AsyncStream<ScanProgress> {
@@ -128,3 +135,4 @@ private actor ScanStreamCoordinator {
         continuation.finish()
     }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later

@@ -8,7 +8,13 @@ enum SettingsStore {
               let settings = try? JSONDecoder().decode(ScannerSettings.self, from: data) else {
             return .defaults
         }
+        #if TRASHIT_APP_STORE
+        var sandboxSettings = settings
+        sandboxSettings.scanRoots = SecurityScopedAccess.restoreAll()
+        return sandboxSettings
+        #else
         return settings
+        #endif
     }
 
     static func save(_ settings: ScannerSettings) {
@@ -16,3 +22,4 @@ enum SettingsStore {
         UserDefaults.standard.set(data, forKey: key)
     }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later

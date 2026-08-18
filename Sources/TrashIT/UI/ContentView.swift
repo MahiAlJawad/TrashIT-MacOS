@@ -24,11 +24,14 @@ enum SidebarDestination: String, CaseIterable, Identifiable {
     }
 }
 
-struct ContentView: View {
+public struct ContentView: View {
     @EnvironmentObject private var model: AppModel
     @State private var destination: SidebarDestination? = .overview
+    @State private var cleanupRequest: CleanupNavigationRequest?
 
-    var body: some View {
+    public init() {}
+
+    public var body: some View {
         NavigationSplitView {
             List(SidebarDestination.allCases, selection: $destination) { item in
                 Label(item.title, systemImage: item.symbol)
@@ -41,8 +44,15 @@ struct ContentView: View {
         } detail: {
             Group {
                 switch destination ?? .overview {
-                case .overview: OverviewView(goToReview: { destination = .cleanup })
-                case .cleanup: ReviewView()
+                case .overview:
+                    OverviewView(
+                        goToCleanup: { request in
+                            cleanupRequest = request
+                            destination = .cleanup
+                        },
+                        goToHistory: { destination = .history }
+                    )
+                case .cleanup: ReviewView(navigationRequest: $cleanupRequest)
                 case .history: HistoryView()
                 }
             }
@@ -99,3 +109,4 @@ private struct SidebarStatusView: View {
         return "\(model.items.count) suggestions"
     }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later

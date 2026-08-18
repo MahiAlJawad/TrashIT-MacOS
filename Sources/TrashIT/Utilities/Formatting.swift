@@ -18,3 +18,4 @@ enum Formatting {
         return date.formatted(.relative(presentation: .named))
     }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later

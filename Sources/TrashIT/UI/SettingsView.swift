@@ -1,10 +1,12 @@
 import SwiftUI
 import AppKit
 
-struct SettingsView: View {
+public struct SettingsView: View {
     @EnvironmentObject private var model: AppModel
 
-    var body: some View {
+    public init() {}
+
+    public var body: some View {
         Form {
             Section("Scan folders") {
                 ForEach(model.settings.scanRoots, id: \.self) { url in
@@ -49,12 +51,36 @@ struct SettingsView: View {
             }
 
             Section("Categories") {
-                Toggle("Large application caches", isOn: settingBinding(\.includeGeneralCaches))
+                Toggle("Known browser caches and old logs", isOn: settingBinding(\.includeGeneralCaches))
                 Toggle("Review Trash contents", isOn: settingBinding(\.includeTrash))
                 Toggle("Review iPhone and iPad backups", isOn: settingBinding(\.includeDeviceBackups))
-                Toggle("Keep only the latest simulator minor per major", isOn: settingBinding(\.keepLatestSimulatorMinorPerMajor))
-                Toggle("Experimental application-leftover detection", isOn: settingBinding(\.includeAppLeftovers))
-                Text("App leftovers are only suggestions and are marked potentially irreplaceable. They are never preselected.")
+                Text("Broad application-cache catalogs and application-leftover removal are intentionally outside this release.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section("Never suggest") {
+                if model.settings.excludedPaths.isEmpty {
+                    Text("Use “Never suggest this” from an item’s menu in Cleanup to add an exclusion.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(model.settings.excludedPaths, id: \.self) { url in
+                        HStack {
+                            Image(systemName: "nosign").foregroundStyle(.secondary)
+                            Text(url.path).lineLimit(1).truncationMode(.middle)
+                            Spacer()
+                            Button(role: .destructive) {
+                                model.removeExcludedPath(url)
+                            } label: {
+                                Image(systemName: "minus.circle")
+                            }
+                            .buttonStyle(.plain)
+                            .help("Allow this path to be suggested again")
+                        }
+                    }
+                }
+                Text("Exclusions persist across scans and also cover files inside an excluded folder.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -117,3 +143,4 @@ struct SettingsView: View {
         }
     }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ReviewView: View {
     @EnvironmentObject private var model: AppModel
+    @Binding var navigationRequest: CleanupNavigationRequest?
 
     @State private var query = ""
     @State private var safetyFilter: SafetyLevel?
@@ -27,6 +28,8 @@ struct ReviewView: View {
     var body: some View {
         VStack(spacing: 0) {
             controls
+            smartSelectionControls
+            if let rule = model.activeSmartSelection { selectionBanner(rule) }
             Divider()
             if displayedItems.isEmpty {
                 ContentUnavailableView(
@@ -48,6 +51,8 @@ struct ReviewView: View {
             selectionBar
         }
         .navigationTitle("Cleanup")
+        .onAppear(perform: consumeNavigationRequest)
+        .onChange(of: navigationRequest?.id) { _, _ in consumeNavigationRequest() }
         .alert("Clean selected items?", isPresented: $showConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Clean \(model.selectedItems.count) items", role: .destructive) {
@@ -79,12 +84,47 @@ struct ReviewView: View {
             .frame(width: 180)
             Spacer()
             Button("Select visible") {
-                let allowed = displayedItems.filter { $0.safety != .irreplaceable }.map(\.id)
-                model.selectedIDs.formUnion(allowed)
+                model.select(displayedItems)
             }
             Button("Clear") { model.clearSelection() }
         }
         .padding(16)
+    }
+
+    private var smartSelectionControls: some View {
+        HStack(spacing: 10) {
+            Text("Smart Selections").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+            ForEach(SmartSelectionRule.allCases) { rule in
+                Button {
+                    model.applySmartSelection(rule)
+                } label: {
+                    Label(rule.title, systemImage: rule.symbolName)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+            }
+            Spacer()
+            Text("Filters only change what you see.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding(.horizontal, 16)
+        .padding(.bottom, 12)
+    }
+
+    private func selectionBanner(_ rule: SmartSelectionRule) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: rule.symbolName).foregroundStyle(.blue)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("\(rule.title) selected \(model.selectedItems.count) items").font(.callout.weight(.semibold))
+                Text(rule.explanation).font(.caption).foregroundStyle(.secondary)
+            }
+            Spacer()
+            Button("Clear") { model.clearSelection() }.buttonStyle(.link)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(Color.blue.opacity(0.08))
     }
 
     private var selectionBar: some View {
@@ -124,6 +164,19 @@ struct ReviewView: View {
         }
         return "\(binItems) filesystem item(s) will move to Bin. \(systemItems) simulator, Docker, or cloud action(s) cannot use Bin. Estimated selection: \(Formatting.bytes(model.selectedBytes))."
     }
+
+    private func consumeNavigationRequest() {
+        guard let request = navigationRequest else { return }
+        query = ""
+        safetyFilter = nil
+        categoryFilter = request.category
+        if let rule = request.smartSelection {
+            model.applySmartSelection(rule)
+        } else if let category = request.category {
+            model.selectRecommended(in: category)
+        }
+        navigationRequest = nil
+    }
 }
 
 private struct CleanupItemRow: View {
@@ -159,6 +212,11 @@ private struct CleanupItemRow: View {
                         .font(.headline.monospacedDigit())
                 }
                 Text(item.reason).font(.callout)
+                if let keeper = item.duplicateEvidence?.keeperURL {
+                    Label("Keeping \(keeper.lastPathComponent)", systemImage: "checkmark.circle")
+                        .font(.caption)
+                        .foregroundStyle(.green)
+                }
                 Text(item.consequence).font(.caption).foregroundStyle(.secondary)
                 HStack(spacing: 12) {
                     if let path = item.url?.path {
@@ -186,5 +244,13 @@ private struct CleanupItemRow: View {
             RoundedRectangle(cornerRadius: 13)
                 .stroke(selected ? item.safety.color.opacity(0.45) : Color(nsColor: .separatorColor).opacity(0.5), lineWidth: 0.7)
         }
+        .contextMenu {
+            if item.url != nil {
+                Button("Reveal in Finder") { model.reveal(item) }
+                Divider()
+                Button("Never suggest this") { model.exclude(item) }
+            }
+        }
     }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later

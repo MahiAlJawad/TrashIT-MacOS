@@ -32,6 +32,38 @@
 		A10000000000000000000018 /* ProjectArtifactScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001B /* ProjectArtifactScanner.swift */; };
 		A10000000000000000000019 /* DockerScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001C /* DockerScanner.swift */; };
 		A1000000000000000000001A /* CleanupResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001D /* CleanupResultView.swift */; };
+		A1000000000000000000001B /* BrowserCacheScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001E /* BrowserCacheScanner.swift */; };
+		A1000000000000000000001C /* DistributionProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001F /* DistributionProfile.swift */; };
+		A1000000000000000000001D /* SecurityScopedAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000020 /* SecurityScopedAccess.swift */; };
+		B10000000000000000000001 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* AppModel.swift */; };
+		B10000000000000000000002 /* TrashITApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* TrashITApp.swift */; };
+		B10000000000000000000003 /* CleanupEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* CleanupEngine.swift */; };
+		B10000000000000000000004 /* SafetyPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* SafetyPolicy.swift */; };
+		B10000000000000000000005 /* CleanupModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000005 /* CleanupModels.swift */; };
+		B10000000000000000000006 /* ScannerSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000006 /* ScannerSettings.swift */; };
+		B10000000000000000000007 /* ReceiptStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* ReceiptStore.swift */; };
+		B10000000000000000000008 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* SettingsStore.swift */; };
+		B10000000000000000000009 /* CleanupScanning.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000009 /* CleanupScanning.swift */; };
+		B1000000000000000000000A /* DeveloperCacheScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* DeveloperCacheScanner.swift */; };
+		B1000000000000000000000B /* GeneralStorageScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000B /* GeneralStorageScanner.swift */; };
+		B1000000000000000000000C /* OldFileScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000C /* OldFileScanner.swift */; };
+		B1000000000000000000000D /* SimulatorScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000D /* SimulatorScanner.swift */; };
+		B1000000000000000000000E /* XcodeScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000E /* XcodeScanner.swift */; };
+		B1000000000000000000000F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000F /* ContentView.swift */; };
+		B10000000000000000000010 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000010 /* HistoryView.swift */; };
+		B10000000000000000000011 /* OverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000011 /* OverviewView.swift */; };
+		B10000000000000000000012 /* ReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* ReviewView.swift */; };
+		B10000000000000000000013 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000013 /* SettingsView.swift */; };
+		B10000000000000000000014 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000014 /* Theme.swift */; };
+		B10000000000000000000015 /* FileInspection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000015 /* FileInspection.swift */; };
+		B10000000000000000000016 /* Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000016 /* Formatting.swift */; };
+		B10000000000000000000017 /* ProcessRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000017 /* ProcessRunner.swift */; };
+		B10000000000000000000018 /* ProjectArtifactScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001B /* ProjectArtifactScanner.swift */; };
+		B10000000000000000000019 /* DockerScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001C /* DockerScanner.swift */; };
+		B1000000000000000000001A /* CleanupResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001D /* CleanupResultView.swift */; };
+		B1000000000000000000001B /* BrowserCacheScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001E /* BrowserCacheScanner.swift */; };
+		B1000000000000000000001C /* DistributionProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000001F /* DistributionProfile.swift */; };
+		B1000000000000000000001D /* SecurityScopedAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000020 /* SecurityScopedAccess.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,16 +90,27 @@
 		A20000000000000000000015 /* FileInspection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Utilities/FileInspection.swift; sourceTree = "<group>"; };
 		A20000000000000000000016 /* Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Utilities/Formatting.swift; sourceTree = "<group>"; };
 		A20000000000000000000017 /* ProcessRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Utilities/ProcessRunner.swift; sourceTree = "<group>"; };
-		A20000000000000000000018 /* TrashIT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrashIT.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000018 /* TrashITDirect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrashITDirect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A20000000000000000000019 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		A2000000000000000000001A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		A2000000000000000000001B /* ProjectArtifactScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Scanning/ProjectArtifactScanner.swift; sourceTree = "<group>"; };
 		A2000000000000000000001C /* DockerScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Scanning/DockerScanner.swift; sourceTree = "<group>"; };
 		A2000000000000000000001D /* CleanupResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/UI/CleanupResultView.swift; sourceTree = "<group>"; };
+		A2000000000000000000001E /* BrowserCacheScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Scanning/BrowserCacheScanner.swift; sourceTree = "<group>"; };
+		A2000000000000000000001F /* DistributionProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Models/DistributionProfile.swift; sourceTree = "<group>"; };
+		A20000000000000000000020 /* SecurityScopedAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/TrashIT/Persistence/SecurityScopedAccess.swift; sourceTree = "<group>"; };
+		B20000000000000000000001 /* TrashITAppStore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrashITAppStore.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B20000000000000000000002 /* TrashITAppStore.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TrashITAppStore.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A30000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B30000000000000000000001 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = ();
@@ -82,6 +125,7 @@
 				A40000000000000000000002 /* Sources */,
 				A20000000000000000000019 /* Package.swift */,
 				A2000000000000000000001A /* README.md */,
+				B20000000000000000000002 /* TrashITAppStore.entitlements */,
 				A40000000000000000000003 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -95,8 +139,10 @@
 				A20000000000000000000004 /* SafetyPolicy.swift */,
 				A20000000000000000000005 /* CleanupModels.swift */,
 				A20000000000000000000006 /* ScannerSettings.swift */,
+				A2000000000000000000001F /* DistributionProfile.swift */,
 				A20000000000000000000007 /* ReceiptStore.swift */,
 				A20000000000000000000008 /* SettingsStore.swift */,
+				A20000000000000000000020 /* SecurityScopedAccess.swift */,
 				A20000000000000000000009 /* CleanupScanning.swift */,
 				A2000000000000000000000A /* DeveloperCacheScanner.swift */,
 				A2000000000000000000000B /* GeneralStorageScanner.swift */,
@@ -105,6 +151,7 @@
 				A2000000000000000000000E /* XcodeScanner.swift */,
 				A2000000000000000000001B /* ProjectArtifactScanner.swift */,
 				A2000000000000000000001C /* DockerScanner.swift */,
+				A2000000000000000000001E /* BrowserCacheScanner.swift */,
 				A2000000000000000000000F /* ContentView.swift */,
 				A2000000000000000000001D /* CleanupResultView.swift */,
 				A20000000000000000000010 /* HistoryView.swift */,
@@ -121,16 +168,19 @@
 		};
 		A40000000000000000000003 /* Products */ = {
 			isa = PBXGroup;
-			children = (A20000000000000000000018 /* TrashIT.app */);
+			children = (
+				A20000000000000000000018 /* TrashITDirect.app */,
+				B20000000000000000000001 /* TrashITAppStore.app */,
+			);
 			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A50000000000000000000001 /* TrashIT */ = {
+		A50000000000000000000001 /* TrashITDirect */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A90000000000000000000002 /* Build configuration list for PBXNativeTarget "TrashIT" */;
+			buildConfigurationList = A90000000000000000000002 /* Build configuration list for PBXNativeTarget "TrashITDirect" */;
 			buildPhases = (
 				A70000000000000000000001 /* Sources */,
 				A30000000000000000000001 /* Frameworks */,
@@ -138,9 +188,24 @@
 			);
 			buildRules = ();
 			dependencies = ();
-			name = TrashIT;
-			productName = TrashIT;
-			productReference = A20000000000000000000018 /* TrashIT.app */;
+			name = TrashITDirect;
+			productName = TrashITDirect;
+			productReference = A20000000000000000000018 /* TrashITDirect.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B50000000000000000000001 /* TrashITAppStore */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B90000000000000000000001 /* Build configuration list for PBXNativeTarget "TrashITAppStore" */;
+			buildPhases = (
+				B70000000000000000000001 /* Sources */,
+				B30000000000000000000001 /* Frameworks */,
+				B70000000000000000000002 /* Resources */,
+			);
+			buildRules = ();
+			dependencies = ();
+			name = TrashITAppStore;
+			productName = TrashITAppStore;
+			productReference = B20000000000000000000001 /* TrashITAppStore.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -152,7 +217,10 @@
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2660;
 				LastUpgradeCheck = 2660;
-				TargetAttributes = { A50000000000000000000001 = { CreatedOnToolsVersion = 26.6; }; };
+				TargetAttributes = {
+					A50000000000000000000001 = { CreatedOnToolsVersion = 26.6; };
+					B50000000000000000000001 = { CreatedOnToolsVersion = 26.6; };
+				};
 			};
 			buildConfigurationList = A90000000000000000000001 /* Build configuration list for PBXProject "TrashIT" */;
 			compatibilityVersion = "Xcode 15.0";
@@ -163,12 +231,21 @@
 			productRefGroup = A40000000000000000000003 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
-			targets = (A50000000000000000000001 /* TrashIT */);
+			targets = (
+				A50000000000000000000001 /* TrashITDirect */,
+				B50000000000000000000001 /* TrashITAppStore */,
+			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		A70000000000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B70000000000000000000002 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = ();
@@ -207,6 +284,45 @@
 				A10000000000000000000018 /* ProjectArtifactScanner.swift in Sources */,
 				A10000000000000000000019 /* DockerScanner.swift in Sources */,
 				A1000000000000000000001A /* CleanupResultView.swift in Sources */,
+				A1000000000000000000001B /* BrowserCacheScanner.swift in Sources */,
+				A1000000000000000000001C /* DistributionProfile.swift in Sources */,
+				A1000000000000000000001D /* SecurityScopedAccess.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B70000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B10000000000000000000001 /* AppModel.swift in Sources */,
+				B10000000000000000000002 /* TrashITApp.swift in Sources */,
+				B10000000000000000000003 /* CleanupEngine.swift in Sources */,
+				B10000000000000000000004 /* SafetyPolicy.swift in Sources */,
+				B10000000000000000000005 /* CleanupModels.swift in Sources */,
+				B10000000000000000000006 /* ScannerSettings.swift in Sources */,
+				B10000000000000000000007 /* ReceiptStore.swift in Sources */,
+				B10000000000000000000008 /* SettingsStore.swift in Sources */,
+				B10000000000000000000009 /* CleanupScanning.swift in Sources */,
+				B1000000000000000000000A /* DeveloperCacheScanner.swift in Sources */,
+				B1000000000000000000000B /* GeneralStorageScanner.swift in Sources */,
+				B1000000000000000000000C /* OldFileScanner.swift in Sources */,
+				B1000000000000000000000D /* SimulatorScanner.swift in Sources */,
+				B1000000000000000000000E /* XcodeScanner.swift in Sources */,
+				B1000000000000000000000F /* ContentView.swift in Sources */,
+				B10000000000000000000010 /* HistoryView.swift in Sources */,
+				B10000000000000000000011 /* OverviewView.swift in Sources */,
+				B10000000000000000000012 /* ReviewView.swift in Sources */,
+				B10000000000000000000013 /* SettingsView.swift in Sources */,
+				B10000000000000000000014 /* Theme.swift in Sources */,
+				B10000000000000000000015 /* FileInspection.swift in Sources */,
+				B10000000000000000000016 /* Formatting.swift in Sources */,
+				B10000000000000000000017 /* ProcessRunner.swift in Sources */,
+				B10000000000000000000018 /* ProjectArtifactScanner.swift in Sources */,
+				B10000000000000000000019 /* DockerScanner.swift in Sources */,
+				B1000000000000000000001A /* CleanupResultView.swift in Sources */,
+				B1000000000000000000001B /* BrowserCacheScanner.swift in Sources */,
+				B1000000000000000000001C /* DistributionProfile.swift in Sources */,
+				B1000000000000000000001D /* SecurityScopedAccess.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -253,11 +369,54 @@
 			};
 			name = Release;
 		};
+		B80000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = TrashITAppStore.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = TrashIT;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHighResolutionCapable = YES;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.trashit.mac.store;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRASHIT_APP_STORE";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Debug;
+		};
+		B80000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = TrashITAppStore.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = TrashIT;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHighResolutionCapable = YES;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.trashit.mac.store;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRASHIT_APP_STORE";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
 		A90000000000000000000001 /* Build configuration list for PBXProject "TrashIT" */ = {isa = XCConfigurationList; buildConfigurations = (A80000000000000000000001 /* Debug */, A80000000000000000000002 /* Release */); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
-		A90000000000000000000002 /* Build configuration list for PBXNativeTarget "TrashIT" */ = {isa = XCConfigurationList; buildConfigurations = (A80000000000000000000003 /* Debug */, A80000000000000000000004 /* Release */); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A90000000000000000000002 /* Build configuration list for PBXNativeTarget "TrashITDirect" */ = {isa = XCConfigurationList; buildConfigurations = (A80000000000000000000003 /* Debug */, A80000000000000000000004 /* Release */); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		B90000000000000000000001 /* Build configuration list for PBXNativeTarget "TrashITAppStore" */ = {isa = XCConfigurationList; buildConfigurations = (B80000000000000000000001 /* Debug */, B80000000000000000000002 /* Release */); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 /* End XCConfigurationList section */
 	};
 	rootObject = A60000000000000000000001 /* Project object */;

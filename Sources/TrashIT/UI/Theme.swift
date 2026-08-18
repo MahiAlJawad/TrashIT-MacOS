@@ -43,3 +43,4 @@ struct CardModifier: ViewModifier {
 extension View {
     func card() -> some View { modifier(CardModifier()) }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later

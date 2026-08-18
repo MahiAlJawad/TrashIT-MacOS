@@ -1,38 +1,40 @@
 # TrashIT
 
-TrashIT is a native SwiftUI macOS storage advisor and cleaner. It finds regeneratable developer artifacts, old downloads, large unused files, app caches, logs, backups, Trash contents, and cautiously identified application leftovers.
+TrashIT is an independently developed, native SwiftUI macOS storage advisor and cleaner. A scan starts with **zero selected items**. Typed recommendations and explicit Smart Selections help the user choose; visibility filters never alter selection.
 
-The app deliberately does not perform screenshot OCR or screenshot classification yet.
+TrashIT does not copy cleanup rules, code, strings, tests, or architecture from Mole or another cleaner. Rule provenance and safety constraints live in [docs/CLEANUP_RULES.md](docs/CLEANUP_RULES.md).
 
-## Run
+## Build and test
 
-Open `Package.swift` in Xcode and run the `TrashIT` executable, or use:
+The package exposes a shared core, direct GUI, and free CLI scaffold:
 
 ```sh
-swift run TrashIT
+swift test
+swift run TrashITDirect
+swift run trashit --version
 ```
 
-The command-line-tools-only environment can build and test the package, but running the graphical app requires a logged-in macOS desktop session.
+The Xcode project contains two macOS products:
 
-## Safety principles
+- `TrashITDirect`: full Developer ID/notarization candidate with the supported developer and system scanners.
+- `TrashITAppStore`: sandboxed feasibility target limited to security-scoped, user-selected folders.
 
-- All ordinary filesystem items—including caches and regeneratable developer data—are moved to Bin through Finder semantics.
-- Permanent deletion is reserved for items that are already inside Bin and is labeled explicitly.
-- Simulator changes use `xcrun simctl` rather than editing CoreSimulator internals.
-- Symbolic links and protected system locations are rejected by the cleanup engine.
-- Archives, backups, application leftovers, and unknown caches are never preselected.
-- Every cleanup shows an immediate per-item result and produces a local receipt.
+The App Store build intentionally has fewer capabilities. See [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md).
 
-## Current scope
+## Implemented safety model
 
-- Xcode Derived Data, test results, device support, documentation, simulator caches, devices, and runtimes.
-- Homebrew, SwiftPM, CocoaPods, npm, Yarn, pnpm, Gradle, Maven, Flutter/Dart, and JetBrains caches.
-- Generated project folders such as `node_modules`, `.build`, `.next`, `.dart_tool`, Pods, Carthage builds, and coverage output.
-- Docker-reported reclaimable images, build cache, stopped containers, and networks through Docker's native prune command; volumes are retained.
-- Large or old files in user-selected scan folders, plus installer/archive detection and likely duplicate downloads.
-- General application caches, old logs and diagnostic reports.
-- Local iCloud-copy eviction when the item reports that it is safely uploaded.
-- iOS device-backup review, Trash review, and conservative app-leftover suggestions.
-- Risk labels, target-based selection, actual volume capacity, cleanup results and receipts, and folder permissions.
+- Safe cleanup, Older simulator runtimes, and Duplicate copies are explicit selection-replacing actions.
+- The newest installed simulator minor/patch is retained for each platform and OS major; unknown, booted, active, and newest runtimes are never recommended.
+- Duplicate copies require equal logical size and a streaming SHA-256 match, and are reverified immediately before cleanup.
+- Package-manager caches prefer fixed, allowlisted owner commands; pnpm uses `store prune`, Maven/Dart remain manual review, and Homebrew targets downloads only.
+- Project artifacts require an ecosystem manifest/config marker.
+- Browser rules target exact cache leaves and exclude profiles and personal data.
+- Persistent “Never suggest this” exclusions cover a path and its descendants.
+- Ordinary filesystem cleanup moves items to Bin; permanent deletion is reserved for items already in Bin.
+- Cleanup revalidates paths, symlinks, owner processes, duplicate hashes, and simulator inventory; changed state fails closed and is recorded.
 
-TrashIT cannot promise that clearing a cache has zero effect: regeneratable items can still require a rebuild, reindex, or re-download. The interface explains this cost before cleanup.
+## Licensing and contributions
+
+Repository source and public builds are licensed under [GPL-3.0-or-later](LICENSE). Separate commercial licenses may be offered for paid signed GUI builds; see [COMMERCIAL-LICENSING.md](COMMERCIAL-LICENSING.md). GPL recipients may redistribute GPL builds and source.
+
+The TrashIT name/logo are covered separately by [TRADEMARKS.md](TRADEMARKS.md). Outside code contributions remain paused until an open-source/IP lawyer approves the [CLA](CLA.md) and commercial distribution documents. See [CONTRIBUTING.md](CONTRIBUTING.md) and [THIRD_PARTY.md](THIRD_PARTY.md).

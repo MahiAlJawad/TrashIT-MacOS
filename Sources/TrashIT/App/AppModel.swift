@@ -2,7 +2,7 @@ import Foundation
 import AppKit
 
 @MainActor
-final class AppModel: ObservableObject {
+public final class AppModel: ObservableObject {
     enum ScanState: Equatable {
         case idle
         case scanning
@@ -26,20 +26,24 @@ final class AppModel: ObservableObject {
     @Published var receipts: [CleanupReceipt] = []
     @Published var latestReceipt: CleanupReceipt?
     @Published var errorMessage: String?
-    @Published var reclaimTargetGB: Double = 10
+    @Published var activeSmartSelection: SmartSelectionRule?
     @Published var completedScanners = 0
     @Published var totalScanners = 0
     @Published var settings: ScannerSettings {
         didSet { SettingsStore.save(settings) }
     }
 
-    private let scanner = StorageScanner()
+    private let scanner: StorageScanner
     private let receiptStore: ReceiptStore
     private let cleanupEngine: CleanupEngine
     private var hasLoaded = false
 
-    init() {
-        let receiptStore = ReceiptStore()
+    public convenience init() {
+        self.init(scanner: StorageScanner(), receiptStore: ReceiptStore())
+    }
+
+    init(scanner: StorageScanner, receiptStore: ReceiptStore) {
+        self.scanner = scanner
         self.receiptStore = receiptStore
         self.cleanupEngine = CleanupEngine(receiptStore: receiptStore)
         self.settings = SettingsStore.load()
@@ -57,6 +61,16 @@ final class AppModel: ObservableObject {
 
     var totalFoundBytes: Int64 { snapshot?.totalBytes ?? 0 }
 
+    var cleanedSoFarBytes: Int64 {
+        receipts.reduce(0) { $0 + $1.processedBytes }
+    }
+
+    var safeToCleanBytes: Int64 {
+        items
+            .filter { $0.recommendations.contains(.lowRisk) }
+            .reduce(0) { $0 + $1.allocatedBytes }
+    }
+
     func loadOnce() async {
         guard !hasLoaded else { return }
         hasLoaded = true
@@ -71,6 +85,7 @@ final class AppModel: ObservableObject {
         totalScanners = 0
         snapshot = ScanSnapshot(date: Date(), items: [], issues: [])
         selectedIDs.removeAll()
+        activeSmartSelection = nil
         defer {
             capacity = VolumeCapacity.current()
             if state == .scanning { state = .ready }
@@ -87,16 +102,25 @@ final class AppModel: ObservableObject {
 
     private func merge(_ result: ScanResult) {
         let existing = snapshot
-        let items = ((existing?.items ?? []) + result.items).sorted {
+        let includedItems = result.items.filter { item in
+            item.url.map(settings.includes) ?? true
+        }
+        let combined = (existing?.items ?? []) + includedItems
+        var seenLocations = Set<String>()
+        let uniqueItems = combined.filter { item in
+            let key = item.url?.standardizedFileURL.path ?? "\(item.source):\(item.id.uuidString)"
+            return seenLocations.insert(key).inserted
+        }
+        let items = uniqueItems.sorted {
             if $0.safety != $1.safety { return $0.safety < $1.safety }
             return $0.allocatedBytes > $1.allocatedBytes
         }
         let issues = (existing?.issues ?? []) + result.issues
         snapshot = ScanSnapshot(date: Date(), items: items, issues: issues)
-        selectedIDs.formUnion(result.items.filter(\.defaultSelected).map(\.id))
     }
 
     func toggle(_ item: CleanupItem) {
+        activeSmartSelection = nil
         if selectedIDs.contains(item.id) {
             selectedIDs.remove(item.id)
         } else {
@@ -104,30 +128,55 @@ final class AppModel: ObservableObject {
         }
     }
 
-    func selectSafestForTarget() {
-        let target = Int64(reclaimTargetGB * 1_000_000_000)
-        var chosen = Set<UUID>()
-        var bytes: Int64 = 0
-        let candidates = items
-            .filter { $0.safety <= .redownloadable && $0.metadata["keepRecommended"] != "true" }
-            .sorted {
-                if $0.safety != $1.safety { return $0.safety < $1.safety }
-                return $0.allocatedBytes > $1.allocatedBytes
-            }
-        for item in candidates where bytes < target {
-            chosen.insert(item.id)
-            bytes += item.allocatedBytes
-        }
-        selectedIDs = chosen
+    func applySmartSelection(_ rule: SmartSelectionRule) {
+        selectedIDs = Set(items
+            .filter { $0.recommendations.contains(rule.recommendation) }
+            .map(\.id))
+        activeSmartSelection = rule
+    }
+
+    func selectRecommended(in category: CleanupCategory) {
+        selectedIDs = Set(items
+            .filter { $0.category == category && !$0.recommendations.isEmpty }
+            .map(\.id))
+        activeSmartSelection = nil
     }
 
     func selectAll(in categories: Set<CleanupCategory>? = nil) {
         let candidates = categories.map { categories in items.filter { categories.contains($0.category) } } ?? items
         selectedIDs.formUnion(candidates.filter { $0.safety != .irreplaceable }.map(\.id))
+        activeSmartSelection = nil
+    }
+
+    func select(_ candidates: [CleanupItem]) {
+        selectedIDs.formUnion(candidates.filter { $0.safety != .irreplaceable }.map(\.id))
+        activeSmartSelection = nil
     }
 
     func clearSelection() {
         selectedIDs.removeAll()
+        activeSmartSelection = nil
+    }
+
+    func exclude(_ item: CleanupItem) {
+        guard let url = item.url else { return }
+        let normalized = url.standardizedFileURL
+        if !settings.excludedPaths.contains(normalized) {
+            settings.excludedPaths.append(normalized)
+        }
+        selectedIDs.remove(item.id)
+        activeSmartSelection = nil
+        if let snapshot {
+            self.snapshot = ScanSnapshot(
+                date: snapshot.date,
+                items: snapshot.items.filter { $0.id != item.id },
+                issues: snapshot.issues
+            )
+        }
+    }
+
+    func removeExcludedPath(_ url: URL) {
+        settings.excludedPaths.removeAll { $0.standardizedFileURL == url.standardizedFileURL }
     }
 
     func cleanSelected() async {
@@ -138,6 +187,7 @@ final class AppModel: ObservableObject {
         latestReceipt = receipt
         receipts = await receiptStore.loadAll()
         selectedIDs.removeAll()
+        activeSmartSelection = nil
         capacity = VolumeCapacity.current()
         state = .ready
         await scan()
@@ -146,10 +196,12 @@ final class AppModel: ObservableObject {
     func addScanFolder(_ url: URL) {
         let normalized = url.standardizedFileURL
         guard !settings.scanRoots.contains(normalized) else { return }
+        SecurityScopedAccess.remember(normalized)
         settings.scanRoots.append(normalized)
     }
 
     func removeScanFolder(_ url: URL) {
+        SecurityScopedAccess.forget(url)
         settings.scanRoots.removeAll { $0.standardizedFileURL == url.standardizedFileURL }
     }
 
@@ -167,3 +219,4 @@ final class AppModel: ObservableObject {
         NSWorkspace.shared.open(FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".Trash", isDirectory: true))
     }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later

@@ -36,3 +36,4 @@ actor ReceiptStore {
         }.sorted { $0.finishedAt > $1.finishedAt }
     }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later

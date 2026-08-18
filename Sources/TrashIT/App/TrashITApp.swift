@@ -1,4 +1,7 @@
 import SwiftUI
+#if SWIFT_PACKAGE
+import TrashITCore
+#endif
 
 @main
 struct TrashITApp: App {
@@ -29,3 +32,4 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return true
     }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later

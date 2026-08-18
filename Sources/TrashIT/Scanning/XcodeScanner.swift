@@ -8,7 +8,7 @@ struct XcodeScanner: CleanupScanning {
         let category: CleanupCategory
         let safety: SafetyLevel
         let consequence: String
-        let selectByDefault: Bool
+        let recommended: Bool
     }
 
     private let rules: [Rule] = [
@@ -17,42 +17,42 @@ struct XcodeScanner: CleanupScanning {
             category: .xcode,
             safety: .regeneratable,
             consequence: "Xcode will rebuild products and indexes the next time the project opens.",
-            selectByDefault: true
+            recommended: true
         ),
         Rule(
             relativePath: "Library/Developer/Xcode/Products",
             category: .xcode,
             safety: .regeneratable,
             consequence: "Xcode will rebuild these generated products when needed.",
-            selectByDefault: true
+            recommended: true
         ),
         Rule(
             relativePath: "Library/Developer/Xcode/DocumentationCache",
             category: .xcode,
             safety: .redownloadable,
             consequence: "Xcode may download documentation again.",
-            selectByDefault: false
+            recommended: true
         ),
         Rule(
             relativePath: "Library/Developer/Xcode/iOS DeviceSupport",
             category: .xcode,
             safety: .redownloadable,
             consequence: "Connecting a matching device may recreate or download support files.",
-            selectByDefault: false
+            recommended: true
         ),
         Rule(
             relativePath: "Library/Developer/Xcode/watchOS DeviceSupport",
             category: .xcode,
             safety: .redownloadable,
             consequence: "Connecting a matching watch may recreate or download support files.",
-            selectByDefault: false
+            recommended: true
         ),
         Rule(
             relativePath: "Library/Developer/CoreSimulator/Caches",
             category: .simulators,
             safety: .regeneratable,
             consequence: "CoreSimulator will recreate its caches; the next launch can be slower.",
-            selectByDefault: true
+            recommended: true
         )
     ]
 
@@ -103,7 +103,7 @@ struct XcodeScanner: CleanupScanning {
             reason: "Generated data in \(rule.relativePath).",
             consequence: rule.consequence,
             source: id,
-            defaultSelected: rule.selectByDefault
+            recommendations: rule.recommended ? [.lowRisk] : []
         )
     }
 
@@ -125,9 +125,9 @@ struct XcodeScanner: CleanupScanning {
                 reason: "An Xcode archive may contain a distributable build and its dSYM.",
                 consequence: "Only move this to Trash if the build and symbols are preserved elsewhere.",
                 source: id,
-                defaultSelected: false,
                 metadata: ["kind": "Xcode archive"]
             )
         }
     }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later

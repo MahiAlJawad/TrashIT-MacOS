@@ -2,24 +2,22 @@ import SwiftUI
 
 struct OverviewView: View {
     @EnvironmentObject private var model: AppModel
-    let goToReview: () -> Void
+    let goToCleanup: (CleanupNavigationRequest) -> Void
+    let goToHistory: () -> Void
 
     private var groupedItems: [(CleanupCategory, [CleanupItem])] {
         Dictionary(grouping: model.items, by: \CleanupItem.category)
             .map { ($0.key, $0.value) }
-            .sorted { $0.1.reduce(0) { $0 + $1.allocatedBytes } > $1.1.reduce(0) { $0 + $1.allocatedBytes } }
+            .sorted { bytes(in: $0.1) > bytes(in: $1.1) }
     }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
                 header
-                storageSummary
-                targetCard
+                summaryGrid
                 categoryGrid
-                if let issues = model.snapshot?.issues, !issues.isEmpty {
-                    issuesCard(issues)
-                }
+                if let issues = model.snapshot?.issues, !issues.isEmpty { issuesCard(issues) }
             }
             .padding(28)
         }
@@ -29,15 +27,14 @@ struct OverviewView: View {
     private var header: some View {
         HStack(alignment: .center) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("Make room without guessing")
-                    .font(.largeTitle.bold())
-                Text("Every suggestion includes its risk and recovery cost.")
+                Text("Make room without guessing").font(.largeTitle.bold())
+                Text("A scan never selects anything. Choose a recommendation when you are ready.")
                     .font(.title3)
                     .foregroundStyle(.secondary)
             }
             Spacer()
             Button {
-                goToReview()
+                goToCleanup(CleanupNavigationRequest())
             } label: {
                 Label("Review \(model.items.count) items", systemImage: "checklist")
                     .padding(.horizontal, 8)
@@ -48,68 +45,72 @@ struct OverviewView: View {
         }
     }
 
-    private var storageSummary: some View {
-        HStack(spacing: 18) {
-            VStack(alignment: .leading, spacing: 10) {
-                Label("Mac storage", systemImage: "internaldrive.fill")
-                    .font(.headline)
-                if let capacity = model.capacity {
-                    HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        Text(Formatting.bytes(capacity.available)).font(.system(size: 30, weight: .semibold, design: .rounded))
-                        Text("available").foregroundStyle(.secondary)
-                    }
-                    ProgressView(value: capacity.usedFraction)
-                        .tint(capacity.usedFraction > 0.9 ? .red : .accentColor)
-                    Text("\(Formatting.bytes(capacity.used)) used of \(Formatting.bytes(capacity.total))")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } else {
-                    Text("Capacity unavailable").foregroundStyle(.secondary)
+    private var summaryGrid: some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 245), spacing: 14)], spacing: 14) {
+            summaryButton(
+                title: "Cleaned so far",
+                value: Formatting.bytes(model.cleanedSoFarBytes),
+                detail: "Successful cleanups recorded on this Mac",
+                symbol: "clock.arrow.circlepath",
+                tint: .green,
+                action: goToHistory
+            )
+            summaryButton(
+                title: "Safe to delete",
+                value: Formatting.bytes(model.safeToCleanBytes),
+                detail: "Regenerable or re-downloadable recommendations",
+                symbol: "checkmark.shield.fill",
+                tint: .blue,
+                action: {
+                    goToCleanup(CleanupNavigationRequest(smartSelection: .safeCleanup))
                 }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .card()
-
-            VStack(alignment: .leading, spacing: 10) {
-                Label("Found by TrashIT", systemImage: "sparkles")
-                    .font(.headline)
-                Text(Formatting.bytes(model.totalFoundBytes))
-                    .font(.system(size: 30, weight: .semibold, design: .rounded))
-                Text("Across \(model.items.count) reviewable items")
-                    .foregroundStyle(.secondary)
-                Text("Found size is an estimate; snapshots and Trash can delay actual recovery.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .card()
+            )
+            availableStorageCard
         }
     }
 
-    private var targetCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Low-disruption target").font(.headline)
-                    Text("Choose regeneratable and re-downloadable items first.")
-                        .foregroundStyle(.secondary)
+    private func summaryButton(
+        title: String,
+        value: String,
+        detail: String,
+        symbol: String,
+        tint: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            VStack(alignment: .leading, spacing: 9) {
+                Label(title, systemImage: symbol).font(.headline).foregroundStyle(.primary)
+                Text(value)
+                    .font(.system(size: 29, weight: .semibold, design: .rounded))
+                    .foregroundStyle(tint)
+                HStack {
+                    Text(detail).font(.caption).foregroundStyle(.secondary)
+                    Spacer()
+                    Image(systemName: "chevron.right").font(.caption).foregroundStyle(.tertiary)
                 }
-                Spacer()
-                Text("\(Int(model.reclaimTargetGB)) GB")
-                    .font(.title2.monospacedDigit().bold())
             }
-            Slider(value: $model.reclaimTargetGB, in: 1...100, step: 1)
-            HStack {
-                SafetyBadge(level: .regeneratable)
-                SafetyBadge(level: .redownloadable)
-                Spacer()
-                Button("Select safest items") {
-                    model.selectSafestForTarget()
-                    goToReview()
-                }
-                .buttonStyle(.bordered)
+            .frame(maxWidth: .infinity, minHeight: 102, alignment: .leading)
+            .card()
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var availableStorageCard: some View {
+        VStack(alignment: .leading, spacing: 9) {
+            Label("Available storage", systemImage: "internaldrive.fill").font(.headline)
+            if let capacity = model.capacity {
+                Text(Formatting.bytes(capacity.available))
+                    .font(.system(size: 29, weight: .semibold, design: .rounded))
+                ProgressView(value: capacity.usedFraction)
+                    .tint(capacity.usedFraction > 0.9 ? .red : .accentColor)
+                Text("\(Formatting.bytes(capacity.used)) used of \(Formatting.bytes(capacity.total))")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                Text("Capacity unavailable").foregroundStyle(.secondary)
             }
         }
+        .frame(maxWidth: .infinity, minHeight: 102, alignment: .leading)
         .card()
     }
 
@@ -117,23 +118,32 @@ struct OverviewView: View {
     private var categoryGrid: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Cleanup categories").font(.title2.bold())
+            Text("Open a category to review it. Only its recommended items will be selected.")
+                .font(.callout)
+                .foregroundStyle(.secondary)
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 230), spacing: 12)], spacing: 12) {
                 ForEach(groupedItems, id: \.0) { category, items in
-                    HStack(spacing: 12) {
-                        Image(systemName: category.symbolName)
-                            .font(.title2)
-                            .foregroundStyle(category.color)
-                            .frame(width: 34, height: 34)
-                            .background(category.color.opacity(0.12), in: RoundedRectangle(cornerRadius: 9))
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text(category.title).fontWeight(.medium)
-                            Text("\(items.count) items · \(Formatting.bytes(items.reduce(0) { $0 + $1.allocatedBytes }))")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                    Button {
+                        goToCleanup(CleanupNavigationRequest(category: category))
+                    } label: {
+                        HStack(spacing: 12) {
+                            Image(systemName: category.symbolName)
+                                .font(.title2)
+                                .foregroundStyle(category.color)
+                                .frame(width: 34, height: 34)
+                                .background(category.color.opacity(0.12), in: RoundedRectangle(cornerRadius: 9))
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(category.title).fontWeight(.medium).foregroundStyle(.primary)
+                                Text("\(items.count) items · \(Formatting.bytes(bytes(in: items)))")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right").font(.caption).foregroundStyle(.tertiary)
                         }
-                        Spacer()
+                        .card()
                     }
-                    .card()
+                    .buttonStyle(.plain)
                 }
             }
         }
@@ -151,6 +161,10 @@ struct OverviewView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .card()
     }
+
+    private func bytes(in items: [CleanupItem]) -> Int64 {
+        items.reduce(0) { $0 + $1.allocatedBytes }
+    }
 }
 
 struct SafetyBadge: View {
@@ -165,3 +179,4 @@ struct SafetyBadge: View {
             .background(level.color.opacity(0.12), in: Capsule())
     }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later

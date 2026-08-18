@@ -34,12 +34,17 @@ struct SimulatorScanner: CleanupScanning {
     func scan(settings: ScannerSettings) async -> ScanResult {
         let budget = ScanBudget(seconds: 18)
         var result = ScanResult()
+        var inUseRuntimeIdentifiers = Set<String>()
 
         do {
             let output = try ProcessRunner.runSimctl(arguments: ["list", "-j"])
             if output.status == 0 {
                 let payload = try JSONDecoder().decode(SimctlPayload.self, from: output.stdout)
-                result.items.append(contentsOf: deviceItems(payload.devices ?? [:], budget: budget))
+                let groups = payload.devices ?? [:]
+                inUseRuntimeIdentifiers = Set(groups.compactMap { runtime, devices in
+                    devices.contains { $0.state?.lowercased() == "booted" } ? runtime : nil
+                })
+                result.items.append(contentsOf: deviceItems(groups, settings: settings, budget: budget))
             } else {
                 result.issues.append(
                     ScanIssue(scanner: id, message: "Simulator tools are unavailable. Install or select a full Xcode installation.")
@@ -54,7 +59,12 @@ struct SimulatorScanner: CleanupScanning {
                 let output = try ProcessRunner.runSimctl(arguments: ["runtime", "list", "-v", "-j"])
                 if output.status == 0 {
                     let images = try JSONDecoder().decode([String: RuntimeImage].self, from: output.stdout)
-                    result.items.append(contentsOf: runtimeItems(Array(images.values), settings: settings, budget: budget))
+                    result.items.append(contentsOf: runtimeItems(
+                        Array(images.values),
+                        inUseRuntimeIdentifiers: inUseRuntimeIdentifiers,
+                        settings: settings,
+                        budget: budget
+                    ))
                 } else {
                     result.issues.append(ScanIssue(scanner: id, message: "Installed runtime images could not be read."))
                 }
@@ -69,12 +79,17 @@ struct SimulatorScanner: CleanupScanning {
         return result
     }
 
-    private func deviceItems(_ groups: [String: [Device]], budget: ScanBudget) -> [CleanupItem] {
+    private func deviceItems(
+        _ groups: [String: [Device]],
+        settings: ScannerSettings,
+        budget: ScanBudget
+    ) -> [CleanupItem] {
         groups.flatMap { runtimeIdentifier, devices in
             devices.compactMap { (device: Device) -> CleanupItem? in
                 guard !budget.isExpired else { return nil }
                 guard device.state?.lowercased() != "booted" else { return nil }
                 let url = device.dataPath.map { URL(fileURLWithPath: $0, isDirectory: true) }
+                if let url, !settings.includes(url) { return nil }
                 let bytes = device.dataPathSize ?? url.map { FileInspection.allocatedSize(of: $0) } ?? 0
                 let unavailable = device.isAvailable == false
                 return CleanupItem(
@@ -88,16 +103,22 @@ struct SimulatorScanner: CleanupScanning {
                     reason: unavailable ? "This simulator device is unavailable." : "This simulator device is currently shut down.",
                     consequence: "The device data and installed test apps will be removed. A fresh device can be created later.",
                     source: id,
-                    defaultSelected: unavailable,
+                    recommendations: unavailable ? [.lowRisk] : [],
                     metadata: ["runtime": runtimeIdentifier, "udid": device.udid]
                 )
             }
         }
     }
 
-    func runtimeItems(_ images: [RuntimeImage], settings: ScannerSettings, budget: ScanBudget) -> [CleanupItem] {
+    func runtimeItems(
+        _ images: [RuntimeImage],
+        inUseRuntimeIdentifiers: Set<String> = [],
+        settings: ScannerSettings = .defaults,
+        budget: ScanBudget
+    ) -> [CleanupItem] {
         let deletableImages = images.filter { $0.deletable != false }
-        let latestByPlatformMajor = Dictionary(grouping: deletableImages, by: runtimeFamilyKey)
+        let knownImages = deletableImages.filter { runtimeFamilyKey($0) != nil }
+        let latestByPlatformMajor = Dictionary(grouping: knownImages) { runtimeFamilyKey($0)! }
             .compactMapValues { group in
                 group.max { lhs, rhs in
                     let comparison = compareVersions(lhs.version, rhs.version)
@@ -109,10 +130,20 @@ struct SimulatorScanner: CleanupScanning {
         return deletableImages.compactMap { runtime -> CleanupItem? in
             guard !budget.isExpired else { return nil }
             let url = runtime.runtimeBundlePath.map { URL(fileURLWithPath: $0, isDirectory: true) }
+            if let url, !settings.includes(url) { return nil }
             let bytes = runtime.sizeBytes ?? url.map { FileInspection.allocatedSize(of: $0) } ?? 0
-            let isLatest = latestByPlatformMajor[runtimeFamilyKey(runtime)] == runtime.identifier
+            let family = runtimeFamilyKey(runtime)
+            let isLatest = family.flatMap { latestByPlatformMajor[$0] } == runtime.identifier
             let unavailable = runtime.state?.lowercased() != "ready"
-            let suggested = unavailable || (settings.keepLatestSimulatorMinorPerMajor && !isLatest)
+            let isInUse = runtime.runtimeIdentifier.map(inUseRuntimeIdentifiers.contains) ?? false
+            let isOutdated = family != nil && !unavailable && !isLatest && !isInUse
+            var recommendations = Set<CleanupRecommendation>()
+            if family != nil && unavailable && !isInUse {
+                recommendations.insert(.lowRisk)
+            }
+            if isOutdated {
+                recommendations.formUnion([.lowRisk, .outdatedSimulator])
+            }
             let platformName = platformDisplayName(runtime.platformIdentifier)
             let version = runtime.version ?? "Unknown"
             let buildSuffix = runtime.build.map { " (\($0))" } ?? ""
@@ -124,25 +155,46 @@ struct SimulatorScanner: CleanupScanning {
                 action: .deleteSimulatorRuntime(identifier: runtime.identifier),
                 allocatedBytes: bytes,
                 lastUsed: parseISODate(runtime.lastUsedAt),
-                reason: unavailable ? "This runtime image is not ready." : (isLatest ? "Latest installed \(platformName) runtime for this major OS version." : "A newer \(platformName) runtime for this major OS version is installed."),
+                reason: runtimeReason(
+                    platformName: platformName,
+                    unavailable: unavailable,
+                    isLatest: isLatest,
+                    isInUse: isInUse,
+                    hasKnownVersion: family != nil
+                ),
                 consequence: "Projects targeting this exact runtime cannot run until it is downloaded again.",
                 source: id,
-                defaultSelected: suggested,
+                recommendations: recommendations,
                 metadata: [
                     "identifier": runtime.identifier,
                     "runtimeIdentifier": runtime.runtimeIdentifier ?? "Unknown",
                     "version": version,
                     "build": runtime.build ?? "Unknown",
                     "kind": runtime.kind ?? "Unknown",
-                    "keepRecommended": isLatest && !unavailable ? "true" : "false"
+                    "inUse": isInUse ? "true" : "false"
                 ]
             )
         }
     }
 
-    private func runtimeFamilyKey(_ runtime: RuntimeImage) -> String {
-        let major = versionParts(runtime.version).first ?? -1
-        return "\(runtime.platformIdentifier ?? "unknown")|\(major)"
+    private func runtimeFamilyKey(_ runtime: RuntimeImage) -> String? {
+        guard let platform = runtime.platformIdentifier,
+              let major = versionParts(runtime.version)?.first else { return nil }
+        return "\(platform)|\(major)"
+    }
+
+    private func runtimeReason(
+        platformName: String,
+        unavailable: Bool,
+        isLatest: Bool,
+        isInUse: Bool,
+        hasKnownVersion: Bool
+    ) -> String {
+        if isInUse { return "A booted simulator is currently using this runtime." }
+        if !hasKnownVersion { return "The runtime version could not be determined, so it is not recommended automatically." }
+        if unavailable { return "This runtime image is not ready." }
+        if isLatest { return "Newest installed \(platformName) runtime for this major OS version." }
+        return "A newer \(platformName) runtime for this major OS version is installed."
     }
 
     private func platformDisplayName(_ identifier: String?) -> String {
@@ -160,13 +212,17 @@ struct SimulatorScanner: CleanupScanning {
         return ISO8601DateFormatter().date(from: value)
     }
 
-    private func versionParts(_ version: String?) -> [Int] {
-        (version ?? "").split(separator: ".").map { Int($0) ?? 0 }
+    private func versionParts(_ version: String?) -> [Int]? {
+        guard let version, !version.isEmpty else { return nil }
+        let parts = version.split(separator: ".")
+        guard !parts.isEmpty else { return nil }
+        let numbers = parts.compactMap { Int($0) }
+        return numbers.count == parts.count ? numbers : nil
     }
 
     private func compareVersions(_ lhs: String?, _ rhs: String?) -> ComparisonResult {
-        let left = versionParts(lhs)
-        let right = versionParts(rhs)
+        let left = versionParts(lhs) ?? []
+        let right = versionParts(rhs) ?? []
         for index in 0..<max(left.count, right.count) {
             let a = index < left.count ? left[index] : 0
             let b = index < right.count ? right[index] : 0
@@ -176,3 +232,4 @@ struct SimulatorScanner: CleanupScanning {
         return .orderedSame
     }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later

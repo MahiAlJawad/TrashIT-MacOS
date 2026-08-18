@@ -9,6 +9,7 @@ enum SafetyPolicyError: LocalizedError {
     case invalidIdentifier
     case cloudCopyNotSafe
     case applicationRunning(String)
+    case unavailableInThisEdition
 
     var errorDescription: String? {
         switch self {
@@ -20,6 +21,7 @@ enum SafetyPolicyError: LocalizedError {
         case .invalidIdentifier: "The simulator identifier is invalid."
         case .cloudCopyNotSafe: "The cloud copy is not fully uploaded or is currently changing."
         case .applicationRunning(let name): "Quit \(name) before cleaning its cache."
+        case .unavailableInThisEdition: "This cleanup action is unavailable in the sandboxed App Store edition."
         }
     }
 }
@@ -40,6 +42,14 @@ enum SafetyPolicy {
     ]
 
     static func validate(_ item: CleanupItem) throws {
+        #if TRASHIT_APP_STORE
+        switch item.action {
+        case .deleteSimulatorDevice, .deleteSimulatorRuntime, .pruneDocker, .cleanToolCache:
+            throw SafetyPolicyError.unavailableInThisEdition
+        default:
+            break
+        }
+        #endif
         switch item.action {
         case .deleteSimulatorDevice(let udid):
             guard udid.range(of: #"^[A-Fa-f0-9-]{8,64}$"#, options: .regularExpression) != nil else {
@@ -56,6 +66,10 @@ enum SafetyPolicy {
             return
         case .pruneDocker:
             return
+        case .cleanToolCache:
+            guard item.category == .developerCaches else {
+                throw SafetyPolicyError.unsafeDirectDeletion
+            }
         case .deleteRegeneratable:
             guard directDeletionCategories.contains(item.category) else {
                 throw SafetyPolicyError.unsafeDirectDeletion
@@ -98,3 +112,4 @@ enum SafetyPolicy {
         }
     }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later

@@ -32,8 +32,7 @@ struct DockerScanner: CleanupScanning {
                 allocatedBytes: reclaimable,
                 reason: "Docker reports stopped containers, unused images, networks, or build cache as reclaimable.",
                 consequence: "Docker will use its own system prune command. Volumes are explicitly retained, but old images may need downloading again.",
-                source: id,
-                defaultSelected: false
+                source: id
             )])
         } catch {
             return ScanResult()
@@ -59,3 +58,4 @@ struct DockerScanner: CleanupScanning {
         return Int64(amount * multiplier)
     }
 }
+// SPDX-License-Identifier: GPL-3.0-or-later
